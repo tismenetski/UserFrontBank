@@ -66,6 +66,27 @@ public class AccountController {
 
 		return "redirect:/userFront";
 	}
+
+
+
+
+	@RequestMapping(value ="/withdraw", method = RequestMethod.GET) //Get will lead to the deposit html page
+	public String withdraw(Model model)
+	{
+		model.addAttribute("accountType",""); //variable binded to the model
+		model.addAttribute("amount",""); //variable binded to the model
+
+		return "withdraw";
+
+	}
+
+	@RequestMapping(value = "/withdraw", method = RequestMethod.POST) // here we receive the values of amount and accountType and user them in the accountService deposit method
+	public String withdrawPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal)
+	{
+		accountService.withdraw(accountType,Double.parseDouble(amount),principal);
+
+		return "redirect:/userFront";
+	}
 	
 	
 	
