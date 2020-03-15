@@ -18,6 +18,7 @@ public interface TransactionService {
     Recipient findRecipientByName(String recipientName);
     Recipient saveRecipient(Recipient recipient);
     List<Recipient> findRecipientList(Principal principal);
+    void toSomeoneElseTransfer(Recipient recipient,String accountType,String amount,PrimaryAccount primaryAccount,SavingsAccount savingsAccount);
 
 
 }
