@@ -1,12 +1,15 @@
 package com.userfront.controller;
 
 import com.userfront.domain.PrimaryAccount;
+import com.userfront.domain.SavingsAccount;
 import com.userfront.domain.User;
+import com.userfront.service.AccountService;
 import com.userfront.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,6 +25,9 @@ public class AccountController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private AccountService 	accountService;
+
 
 	
 	@RequestMapping("/primaryAccount")
@@ -34,22 +40,32 @@ public class AccountController {
 	}
 	
 	@RequestMapping("/savingsAccount")
-	public String savingsAccount()
+	public String savingsAccount(Model model, Principal principal)
 	{
+		User user= userService.findByUsername(principal.getName()); //Create new user and receive it via the userService findByUserName method -> the principal is the user that currently logged in
+		SavingsAccount savingsAccount= user.getSavingsAccount(); // Create primary account instance and assign it the account of the user
+		model.addAttribute("savingsAccount",savingsAccount); // model have two parameters,the model name , and the object
 		return "savingsAccount";
 	}
-	
-	//@RequestMapping
 
-	/*
-	@RequestMapping(value = "/primaryAccount", method = RequestMethod.GET)
-	public BigDecimal primaryAccountBalance(Long id,Model model)
+
+	@RequestMapping(value ="/deposit", method = RequestMethod.GET) //Get will lead to the deposit html page
+	public String deposit(Model model)
 	{
-		PrimaryAccount primaryAccount=
+		model.addAttribute("accountType",""); //variable binded to the model
+		model.addAttribute("amount",""); //variable binded to the model
 
-		model.addAttribute()
+		return "deposit";
+
 	}
-	*/
+
+	@RequestMapping(value = "/deposit", method = RequestMethod.POST) // here we receive the values of amount and accountType and user them in the accountService deposit method
+	public String depositPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal)
+	{
+		accountService.deposit(accountType,Double.parseDouble(amount),principal);
+
+		return "redirect:/userFront";
+	}
 	
 	
 	
