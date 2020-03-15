@@ -5,7 +5,10 @@ import java.security.Principal;
 import java.util.Date;
 
 
+import com.userfront.dao.PrimaryTransactionDao;
+import com.userfront.dao.SavingsTransactionDao;
 import com.userfront.domain.*;
+import com.userfront.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,11 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private TransactionService transactionService;
+
+
 	
 	public PrimaryAccount createPrimaryAccount()
 	{
@@ -68,6 +76,7 @@ public class AccountServiceImpl implements AccountService {
 			primaryAccountDao.save(primaryAccount); //save the primaryAccount in the Database
 			Date date  = new Date();
 			PrimaryTransaction primaryTransaction = new PrimaryTransaction(date,"Deposit to primary Account","Account","Finished",amount,primaryAccount.getAccountBalance(),primaryAccount);
+			transactionService.savePrimaryDepositTransaction(primaryTransaction);
 		}
 		else if (accountType.equalsIgnoreCase("Savings"))
 		{
@@ -77,6 +86,7 @@ public class AccountServiceImpl implements AccountService {
 			savingsAccountDao.save(savingsAccount); //save the savingsAccount in the Database
 			Date date  = new Date();
 			SavingsTransaction savingsTransaction = new SavingsTransaction(date,"Deposit to savings Account","Account","Finished",amount,savingsAccount.getAccountBalance(),savingsAccount);
+			transactionService.saveSavingsDepositTransaction(savingsTransaction);
 		}
 
 	}
